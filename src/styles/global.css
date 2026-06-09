@@ -1,0 +1,43 @@
+/* Reset browser defaults so the prototype fills the viewport edge-to-edge */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow: hidden;
+}
+
+/*
+ * Base document font.
+ *
+ * The new `Menu` component (`@wordpress/components`) styles its items with
+ * `font-family: inherit` and renders in a portal mounted on <body>. Without a
+ * font on <body> the menu would inherit the browser default (serif). Setting it
+ * here — to the design-system body font, same token `@wordpress/ui` uses — makes
+ * the portaled menu (and any other portaled UI) match the rest of the editor.
+ */
+body {
+	font-family: var(
+		--wpds-typography-font-family-body,
+		-apple-system,
+		system-ui,
+		'Segoe UI',
+		'Roboto',
+		'Oxygen-Sans',
+		'Ubuntu',
+		'Cantarell',
+		'Helvetica Neue',
+		sans-serif
+	);
+	font-size: 13px;
+}
+
+#root {
+	height: 100%;
+}

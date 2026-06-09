@@ -1,0 +1,24 @@
+{
+  "name": "editor-header-breadcrumb",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@wordpress/admin-ui": "^2.0.0",
+    "@wordpress/components": "^32.6.0",
+    "@wordpress/icons": "^12.2.0",
+    "@wordpress/theme": "^0.11.0",
+    "@wordpress/ui": "^0.12.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.1",
+    "vite": "^8.0.10"
+  }
+}

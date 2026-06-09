@@ -1,0 +1,121 @@
+/*
+ * WordPress admin bar (Toolbar) — faithful static replica.
+ * ────────────────────────────────────────────────────────
+ * Mirrors the real core styles from `wp-includes/css/admin-bar.css` so the
+ * prototype shows the editor in realistic context.
+ *
+ * Reference PR: https://github.com/WordPress/gutenberg/pull/77964
+ *   That experiment (`gutenberg-admin-bar-in-editor`) surfaces the core admin
+ *   bar inside the fullscreen Post/Site editor. The bar itself is printed
+ *   server-side (`#wpadminbar`); the experiment just stops the editor from
+ *   covering it (body class `.is-admin-bar-in-editor-enabled`) and swaps the
+ *   top-left site icon for an explicit Back button. So there is no React admin
+ *   bar to build in Gutenberg — this file only re-creates its LOOK for the
+ *   prototype. All controls are DUMMY (no navigation).
+ *
+ * Color scheme: "Modern" — the new default admin color scheme in WordPress 7.0
+ * (Trac #64546, which changed the default from "Default"/Fresh to "Modern").
+ * Values below are from the compiled `colors-modern.css`:
+ *   bar      height 32px · background #1e1e1e · font-size 13px
+ *   text     #fff · icon #f3f1f1 (hsl(0,7%,95%))
+ *   hover    background #0c0c0c · color #7b90ff (highlight #3858e9)
+ *   spacing  top-level item padding 0 8px 0 7px · icon margin-right 6px
+ */
+
+.wp-admin-bar {
+	display: flex;
+	align-items: stretch;
+	justify-content: space-between;
+	width: 100%;
+	height: 32px;
+	flex-shrink: 0;
+	background: #1e1e1e;
+	color: #fff;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+	font-size: 13px;
+	line-height: 32px;
+	user-select: none;
+}
+
+.wp-admin-bar__group {
+	display: flex;
+	align-items: stretch;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.wp-admin-bar__group > li {
+	display: flex;
+}
+
+/* A top-level toolbar item (link / button). */
+.wp-admin-bar__item {
+	display: inline-flex;
+	align-items: center;
+	height: 32px;
+	margin: 0;
+	padding: 0 8px 0 7px;
+	border: 0;
+	background: transparent;
+	color: #fff;
+	font: inherit;
+	line-height: 1;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: color 0.1s ease-in-out, background 0.1s ease-in-out;
+}
+
+.wp-admin-bar__item:hover,
+.wp-admin-bar__item:focus-visible {
+	background: #0c0c0c;
+	color: #7b90ff;
+	outline: none;
+}
+
+/* Dashicon wrapper — Modern renders icons near-white, blue on hover. */
+.wp-admin-bar__icon {
+	display: inline-flex;
+	align-items: center;
+	margin-right: 6px;
+	color: #f3f1f1;
+	transition: color 0.1s ease-in-out;
+}
+
+.wp-admin-bar__item:hover .wp-admin-bar__icon,
+.wp-admin-bar__item:focus-visible .wp-admin-bar__icon {
+	color: #7b90ff;
+}
+
+.wp-admin-bar__icon svg {
+	display: block;
+	width: 20px;
+	height: 20px;
+	fill: currentColor;
+}
+
+/* WordPress logo cell — icon only. */
+.wp-admin-bar__item--logo {
+	padding: 0 8px;
+}
+
+.wp-admin-bar__item--logo .wp-admin-bar__icon {
+	margin-right: 0;
+}
+
+/* Comments count label. */
+.wp-admin-bar__count {
+	color: #fff;
+}
+
+/* "Howdy, …" avatar (my-account, top-right). */
+.wp-admin-bar__avatar {
+	width: 20px;
+	height: 20px;
+	margin-left: 8px;
+	border-radius: 2px;
+	background: linear-gradient( 135deg, #f3b34d, #db9320 );
+	flex-shrink: 0;
+}
