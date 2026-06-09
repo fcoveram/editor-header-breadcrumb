@@ -4,8 +4,6 @@ A standalone prototype exploring a new breadcrumb-style document bar for the Wor
 
 **Live demo:** https://editor-header-breadcrumb.vercel.app
 
-**Design reference:** [Figma — Editor's header (node 17:4963)](https://www.figma.com/design/61XvHsq3I7yipitlk7RmmB/Editor-s-header?node-id=17-4963&m=dev)
-
 ---
 
 ## Run locally
