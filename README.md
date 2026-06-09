@@ -2,19 +2,30 @@
 
 A standalone prototype exploring a new breadcrumb-style document bar for the WordPress block editor. The breadcrumb replaces the current flat `DocumentBar` title with a hierarchical trail that communicates where the current document lives (e.g., *Templates / Blog Home / My pattern*).
 
+**Live demo:** https://editor-header-breadcrumb.vercel.app
+
 **Design reference:** [Figma — Editor's header (node 17:4963)](https://www.figma.com/design/61XvHsq3I7yipitlk7RmmB/Editor-s-header?node-id=17-4963&m=dev)
 
 ---
 
-## Running the prototype
+## Run locally
 
 ```bash
 npm install
 npm run dev
-# Opens at http://localhost:5173
+# Vite serves at http://localhost:5173 (or the next free port)
 ```
 
-Use the scenario switcher at the top of the page to preview different document hierarchy states.
+Use the scenario switcher at the top of the page to preview the three breadcrumb versions and open the document menu from each.
+
+## Deploy
+
+The live demo is hosted on **Vercel**, connected to this repository. Vercel auto-detects the Vite app (build `npm run build`, output `dist/`), so:
+
+- every push to `main` triggers a production deploy to the URL above;
+- every branch / pull request gets its own preview URL.
+
+To build the static bundle yourself: `npm run build` (output in `dist/`); preview it locally with `npm run preview`.
 
 ---
 
