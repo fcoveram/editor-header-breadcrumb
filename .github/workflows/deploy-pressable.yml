@@ -1,0 +1,73 @@
+name: Deploy to Pressable
+
+# Builds the Vite app and rsyncs it into the Pressable webroot so it is served
+# at https://www.fvm.house/prototype/editor-header-breadcrumb/.
+#
+# Required repo secrets (Settings → Secrets and variables → Actions):
+#   PRESSABLE_SSH_USER  — SSH username from MyPressable → Site → Collaborators
+#   PRESSABLE_SSH_KEY   — passphrase-less private key whose public half is added
+#                         in MyPressable → Profile → Settings → SSH Keys
+#
+# Until both secrets exist the job still runs (and builds) but skips the deploy,
+# so it stays green rather than failing. Use "Run workflow" (workflow_dispatch)
+# to redeploy after adding the secrets.
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Avoid overlapping deploys racing on the same remote folder.
+concurrency:
+  group: deploy-pressable
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for Pressable secrets
+        id: secrets
+        env:
+          SSH_USER: ${{ secrets.PRESSABLE_SSH_USER }}
+          SSH_KEY: ${{ secrets.PRESSABLE_SSH_KEY }}
+        run: |
+          if [ -z "$SSH_USER" ] || [ -z "$SSH_KEY" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::PRESSABLE_SSH_USER / PRESSABLE_SSH_KEY not set — building only, skipping deploy. Add them in repo Settings → Secrets → Actions, then re-run."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22' # Vite 8 needs Node 20.19+/22.12+
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run build # → dist/
+
+      - name: Set up SSH
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          SSH_KEY: ${{ secrets.PRESSABLE_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ssh.pressable.com >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy to Pressable (rsync over SSH)
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          SSH_USER: ${{ secrets.PRESSABLE_SSH_USER }}
+          REMOTE_DIR: /htdocs/prototype/editor-header-breadcrumb
+        run: |
+          ssh -i ~/.ssh/id_ed25519 "$SSH_USER@ssh.pressable.com" "mkdir -p $REMOTE_DIR"
+          rsync -az -e "ssh -i ~/.ssh/id_ed25519" dist/ "$SSH_USER@ssh.pressable.com:$REMOTE_DIR/"
+          echo "::notice::Deployed. If the page looks stale, purge the Edge Cache in MyPressable → Sites → Cache (hashed JS/CSS are immutable; only index.html caches)."
+
+      # No `--delete`: old hashed assets are left in place so any edge-cached
+      # index.html keeps working. Prune the remote folder manually if it grows.

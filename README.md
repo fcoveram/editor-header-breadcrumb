@@ -2,7 +2,7 @@
 
 A standalone prototype exploring a new breadcrumb-style document bar for the WordPress block editor. The breadcrumb replaces the current flat `DocumentBar` title with a hierarchical trail that communicates where the current document lives (e.g., *Templates / Blog Home / My pattern*).
 
-**Live demo:** https://editor-header-breadcrumb.vercel.app
+**Live demo:** https://www.fvm.house/prototype/editor-header-breadcrumb/ (mirror: https://editor-header-breadcrumb.vercel.app)
 
 ---
 
@@ -18,12 +18,14 @@ Use the scenario switcher at the top of the page to preview the three breadcrumb
 
 ## Deploy
 
-The live demo is hosted on **Vercel**, connected to this repository. Vercel auto-detects the Vite app (build `npm run build`, output `dist/`), so:
+Both targets are fed from this repo on push to `main`:
 
-- every push to `main` triggers a production deploy to the URL above;
-- every branch / pull request gets its own preview URL.
+- **Primary — Pressable** → `https://www.fvm.house/prototype/editor-header-breadcrumb/`. The workflow [`.github/workflows/deploy-pressable.yml`](.github/workflows/deploy-pressable.yml) builds and `rsync`s `dist/` into the site's webroot (`/htdocs/prototype/editor-header-breadcrumb/`) over SSH. It needs repo secrets `PRESSABLE_SSH_USER` and `PRESSABLE_SSH_KEY` (a passphrase-less key whose public half is added in MyPressable → Profile → SSH Keys). After a deploy, purge the Edge Cache in MyPressable if the page looks stale — hashed JS/CSS are immutable, only `index.html` caches.
+- **Mirror — Vercel** → `https://editor-header-breadcrumb.vercel.app`. Auto-detects the Vite app and redeploys on push; PRs get preview URLs.
 
-To build the static bundle yourself: `npm run build` (output in `dist/`); preview it locally with `npm run preview`.
+Build the static bundle yourself with `npm run build` (output in `dist/`); preview with `npm run preview`.
+
+> The build uses `base: './'` (relative asset paths), so the same `dist/` works at the Vercel root **and** under the Pressable subpath.
 
 ---
 
